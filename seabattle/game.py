@@ -8,6 +8,8 @@ import logging
 
 from transliterate import translit
 
+from seabattle.strategy import Strategy, DamagedShipStrategy, Point, RandomStrategy
+
 EMPTY = 0
 SHIP = 1
 BLOCKED = 2
@@ -247,6 +249,23 @@ class BaseGame(object):
 class Game(BaseGame):
     """Реализация игры с ипользованием обычного random"""
 
+    def __init__(self):
+        self.strategy = Strategy(region_size=4)
+        self.damaged_ship_strategy = None
+
+        self.four_decker_count = 1
+        self.three_decker_count = 2
+        self.two_decker_count = 3
+        self.one_decker_count = 4
+
+        self.four_decker_strategy = Strategy(region_size=4)
+        self.three_decker_strategy = Strategy(region_size=3)
+        self.two_decker_strategy = Strategy(region_size=2)
+        self.one_decker_strategy = RandomStrategy(game=self)
+        super(Game, self).__init__()
+
+
+
     def generate_field(self):
         """Метод генерации поля"""
         self.field = [0] * self.size ** 2
@@ -297,11 +316,55 @@ class Game(BaseGame):
             pass
 
     def do_shot(self):
-        """Метод выбора координаты выстрела.
 
-        ЕГО И НУЖНО ЗАМЕНИТЬ НА СВОЙ АЛГОРИТМ
-        """
-        index = random.choice([i for i, v in enumerate(self.enemy_field) if v == EMPTY])
-
-        self.last_shot_position = self.calc_position(index)
+        self.last_shot_position = self.strategy.get_shoot_point()
         return self.convert_from_position(self.last_shot_position)
+
+    def handle_enemy_reply(self, message):
+        if self.last_shot_position is None:
+            return
+
+        index = self.calc_index(self.last_shot_position)
+
+        if message in ['hit', 'kill']:
+            self.enemy_field[index] = SHIP
+            if self.damaged_ship_strategy is None:
+                self.damaged_ship_strategy = DamagedShipStrategy()
+                self.damaged_ship_strategy.shoot_field(Point(self.last_shot_position))
+
+            if message == 'kill':
+                self.enemy_ships_count -= 1
+
+                self._mark_nearby_ship_points_as_miss()
+                self.damaged_ship_strategy = None
+                self.reduce_enemy_ships_count(len(self.damaged_ship_strategy.ship))
+                self._set_strategy()
+
+        elif message == 'miss':
+            self.enemy_field[index] = MISS
+
+    def _mark_nearby_ship_points_as_miss(self):
+        for point in self.damaged_ship_strategy.get_nearby_ship_points():
+            index = self.calc_index(point)
+            if self.enemy_field[index] == EMPTY:
+                self.enemy_field[index] = MISS
+
+    def _set_strategy(self):
+        if self.four_decker_count:
+            self.strategy = self.four_decker_strategy
+        elif self.three_decker_count:
+            self.strategy = self.three_decker_strategy
+        elif self.two_decker_count:
+            self.strategy = self.two_decker_strategy
+        else:
+            self.strategy = self.one_decker_strategy
+
+    def reduce_enemy_ships_count(self, deckers):
+        if deckers == 4:
+            self.four_decker_count -= 1
+        if deckers == 3:
+            self.three_decker_count -= 1
+        if deckers == 2:
+            self.two_decker_count -= 1
+        if deckers == 1:
+            self.one_decker_count -= 1
