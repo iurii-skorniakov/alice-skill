@@ -36,6 +36,6 @@ def points_in_line_count(shooting_field, size):
 
 
 def test_strategy(four_decker_strategy, three_decker_strategy, two_decker_strategy):
-    assert points_in_line_count(four_decker_strategy, 4)
-    assert points_in_line_count(three_decker_strategy, 3)
-    assert points_in_line_count(two_decker_strategy, 2)
+    assert points_in_line_count(four_decker_strategy.shooting_field, 4)
+    assert points_in_line_count(three_decker_strategy.shooting_field, 3)
+    assert points_in_line_count(two_decker_strategy.shooting_field, 2)
