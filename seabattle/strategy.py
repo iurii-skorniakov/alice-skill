@@ -74,6 +74,7 @@ class DamagedShipStrategy(AbstractStrategy):
         self.index = None
 
     def add_ship_point(self, point):
+        point - Point(*point)
         self.ship.append(point)
         nearby_points = self.get_nearby_line_points(Point(*point))
         self.shoot_field += nearby_points
