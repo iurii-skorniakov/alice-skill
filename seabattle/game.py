@@ -331,7 +331,7 @@ class Game(BaseGame):
             self.enemy_field[index] = SHIP
             if self.damaged_ship_strategy is None:
                 self.damaged_ship_strategy = DamagedShipStrategy()
-                self.damaged_ship_strategy.shoot_field(Point(self.last_shot_position))
+                self.damaged_ship_strategy.add_ship_point(Point(self.last_shot_position))
 
             if message == 'kill':
                 self.enemy_ships_count -= 1
