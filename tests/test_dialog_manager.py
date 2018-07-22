@@ -45,7 +45,7 @@ def opponent(name):
 
 
 def test_game_1():
-    assert say('новая игра. соперник яндекс') == newgame('яндекс')
+    assert say('начни новую игру соперник яндекс') == newgame('яндекс')
 
     field = [gm.EMPTY, gm.EMPTY, gm.EMPTY,
              gm.SHIP,  gm.EMPTY, gm.SHIP,
