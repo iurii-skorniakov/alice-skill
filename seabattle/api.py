@@ -46,3 +46,7 @@ def main():
 
     log.info('Response: %r', response)
     return json.dumps(response)
+
+
+if __name__ == '__main__':
+    app.run()
