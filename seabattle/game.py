@@ -346,7 +346,11 @@ class Game(BaseGame):
 
     def _mark_nearby_ship_points_as_miss(self):
         for point in self.damaged_ship_strategy.get_nearby_ship_points():
-            index = self.calc_index(point)
+            try:
+                index = self.calc_index(point)
+            except ValueError:
+                continue
+
             if self.enemy_field[index] == EMPTY:
                 self.enemy_field[index] = MISS
 
