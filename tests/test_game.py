@@ -4,6 +4,8 @@ from seabattle.game import Game
 
 import pytest
 
+from seabattle.strategy import RandomStrategy
+
 
 @pytest.fixture
 def game():
@@ -78,6 +80,22 @@ def test_shot(game_with_field):
     assert game_with_field.handle_enemy_shot((10, 2)) == 'kill'
 
     assert game_with_field.handle_enemy_shot((1, 10)) == 'kill'
+
+
+def setup_game_couts(game, four=1, three=2, two=3, one=4):
+    game.four_decker_count = four
+    game.three_decker_count = three
+    game.two_decker_count = two
+    game.one_decker_count = one
+    game._set_strategy()
+    return game.strategy
+
+
+def test_change_strategy(game):
+    assert setup_game_couts(game).region_size == 4
+    assert setup_game_couts(game, four=0).region_size == 3
+    assert setup_game_couts(game, four=0, three=0).region_size == 2
+    assert isinstance(setup_game_couts(game, four=0, three=0, two=0), RandomStrategy)
 
 
 def test_dead_ship(game_with_field):

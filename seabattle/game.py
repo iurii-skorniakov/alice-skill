@@ -9,7 +9,6 @@ import logging
 from transliterate import translit
 
 from seabattle.strategy import Strategy, DamagedShipStrategy, Point, RandomStrategy
-
 EMPTY = 0
 SHIP = 1
 BLOCKED = 2
@@ -316,9 +315,11 @@ class Game(BaseGame):
             pass
 
     def do_shot(self):
-
-        self.last_shot_position = self.strategy.get_shoot_point()
-        return self.convert_from_position(self.last_shot_position)
+        while True:
+            point_to_shoot = self.strategy.get_shoot_point()
+            if self.enemy_field[self.calc_index(point_to_shoot)] == EMPTY:
+                self.last_shot_position = self.strategy.get_shoot_point()
+                return self.convert_from_position(self.last_shot_position)
 
     def handle_enemy_reply(self, message):
         if self.last_shot_position is None:
