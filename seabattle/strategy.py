@@ -38,7 +38,7 @@ class Strategy(AbstractStrategy):
                 for y in range(region.start_y, region.end_y + 1):
                     local_y = y - region.start_y
                     if self.combination[local_y][local_x] == 1:
-                        shooting_field.append((x, y))
+                        shooting_field.append(Point(x, y))
         return shooting_field
 
     def get_regions(self):

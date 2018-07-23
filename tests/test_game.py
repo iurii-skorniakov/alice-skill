@@ -4,7 +4,7 @@ from seabattle.game import Game
 
 import pytest
 
-from seabattle.strategy import RandomStrategy
+from seabattle.strategy import RandomStrategy, Point
 
 
 @pytest.fixture
@@ -125,6 +125,15 @@ def test_handle_shot(game_with_field):
 
     with pytest.raises(ValueError):
         game_with_field.handle_enemy_shot((19, 6))
+
+
+def test_handle_enemy_reply(game):
+    game.last_shot_position = Point(1, 1)
+    game.handle_enemy_reply('hit')
+    game.last_shot_position = Point(1, 2)
+    game.handle_enemy_reply('kill')
+    game.last_shot_position = Point(1, 3)
+    game.handle_enemy_reply('miss')
 
 
 def test_handle_reply(game):
