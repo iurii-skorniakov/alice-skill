@@ -318,6 +318,7 @@ class Game(BaseGame):
         while True:
             point_to_shoot = self.strategy.get_shoot_point()
             if point_to_shoot is None:
+                print('Не найдено точек для выстрела')
                 self._set_strategy()
                 continue
             if self.enemy_field[self.calc_index(point_to_shoot)] == EMPTY:
