@@ -65,6 +65,7 @@ Point = namedtuple('Point', ['x', 'y'])
 
 class DamagedShipStrategy(AbstractStrategy):
     def get_shoot_point(self):
+        print(self.shoot_field)
         return self.shoot_field.pop()
 
     def __init__(self):
