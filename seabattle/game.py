@@ -337,8 +337,8 @@ class Game(BaseGame):
                 self.enemy_ships_count -= 1
 
                 self._mark_nearby_ship_points_as_miss()
-                self.damaged_ship_strategy = None
                 self.reduce_enemy_ships_count(len(self.damaged_ship_strategy.ship))
+                self.damaged_ship_strategy = None
                 self._set_strategy()
 
         elif message == 'miss':
