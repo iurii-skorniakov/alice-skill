@@ -317,6 +317,9 @@ class Game(BaseGame):
     def do_shot(self):
         while True:
             point_to_shoot = self.strategy.get_shoot_point()
+            if point_to_shoot is None:
+                self._set_strategy()
+                continue
             if self.enemy_field[self.calc_index(point_to_shoot)] == EMPTY:
                 self.last_shot_position = self.strategy.get_shoot_point()
                 return self.convert_from_position(self.last_shot_position)
@@ -332,6 +335,7 @@ class Game(BaseGame):
             if self.damaged_ship_strategy is None:
                 self.damaged_ship_strategy = DamagedShipStrategy()
                 self.damaged_ship_strategy.add_ship_point(self.last_shot_position)
+                self.strategy = self.damaged_ship_strategy
 
             if message == 'kill':
                 self.enemy_ships_count -= 1
